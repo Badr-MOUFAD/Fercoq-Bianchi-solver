@@ -17,6 +17,14 @@ class Lasso:
             and uses its gradient to minimize objective.
             If False, uses a saddle point formulation of objective
             and uses prox of the conjugate of datafit to minimize objective.
+
+    Attributes
+    ----------
+        coef_ : array, shape (n_features,)
+            regression coefficients.
+
+        p_objs_ : array, shape (max_iter,)
+            Values of the primal objective in each iteration.
     """
 
     def __init__(self, alpha, smooth_formulation=True,
@@ -58,6 +66,7 @@ class Lasso:
                            verbose=self.verbose, per_pass=1)
 
         self.coef_ = pb.sol
+        self.p_objs_ = pb.p_objs
         return self
 
 

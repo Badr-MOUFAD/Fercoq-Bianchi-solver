@@ -718,6 +718,9 @@ def coordinate_descent(pb, int max_iter=1000, max_time=1000.,
     #----------------------- Main loop ----------------------------#
     cdef DOUBLE init_time = time.time()
     cdef DOUBLE elapsed_time = 0.
+
+    pb.p_objs = []
+
     if verbose > 0:
         pb.print_style = print_style
         pb.printed_values = []
@@ -821,6 +824,12 @@ def coordinate_descent(pb, int max_iter=1000, max_time=1000.,
                     &change_in_x, &change_in_y)
 
         elapsed_time = time.time() - init_time
+
+        compute_primal_value(pb, f, g, h, x, rf, rhx, rQ,
+                                         buff_x, buff_y, buff,
+                                         &primal_val, &infeas)
+        pb.p_objs.append(primal_val)
+
         if verbose > 0 or tolerance > 0:
             if ((verbose > 0 and elapsed_time > nb_prints * verbose)
                     or change_in_x + change_in_y < min_change_in_x

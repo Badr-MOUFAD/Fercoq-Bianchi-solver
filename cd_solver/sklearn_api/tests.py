@@ -18,7 +18,7 @@ def test_lasso_estimator(smooth_formulation):
 
     # Fercoq & Bianchi Lasso
     fq_estimator = Lasso(alpha, smooth_formulation=smooth_formulation,
-                         max_iter=10_000)
+                         max_iter=10_000, verbose=0)
     fq_estimator.fit(X, y)
 
     # scikit learn Lasso
