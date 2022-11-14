@@ -81,7 +81,7 @@ class Problem:
             if blocks is None:
                   blocks = np.arange(N+1, dtype=np.uint32)
             self.blocks = np.array(blocks, dtype=np.uint32)
-            if blocks[-1] != N:
+            if blocks[len(blocks)-1] != N:
                   raise Warning("blocks[-1] should be equal to N")
             if x_init is None:
                   self.x_init = np.zeros(N)
@@ -111,7 +111,7 @@ class Problem:
                 cf = Af = bf = np.empty(0)
             if blocks_f is None:
                 blocks_f = np.arange(len(f)+1, dtype=np.uint32)
-            if len(blocks_f) != len(f) + 1 or blocks_f[-1] != Af.shape[0]:
+            if len(blocks_f) != len(f) + 1 or blocks_f[len(blocks_f)-1] != Af.shape[0]:
                   raise Warning("blocks_f seems to be ill defined.")
             
             if g is not None and len(g) > 0:
@@ -169,7 +169,7 @@ class Problem:
                 h_takes_infinite_values = False
             if blocks_h is None:
                 blocks_h = np.arange(len(h)+1, dtype=np.uint32)
-            if len(blocks_h) != len(h) + 1 or blocks_h[-1] != Ah.shape[0]:
+            if len(blocks_h) != len(h) + 1 or blocks_h[len(blocks_h)-1] != Ah.shape[0]:
                     raise Warning("blocks_h seems to be ill defined.")
             if Q is None:
                 self.Q_present = False
@@ -718,6 +718,9 @@ def coordinate_descent(pb, int max_iter=1000, max_time=1000.,
     #----------------------- Main loop ----------------------------#
     cdef DOUBLE init_time = time.time()
     cdef DOUBLE elapsed_time = 0.
+
+    pb.p_objs = []
+
     if verbose > 0:
         pb.print_style = print_style
         pb.printed_values = []
@@ -821,6 +824,12 @@ def coordinate_descent(pb, int max_iter=1000, max_time=1000.,
                     &change_in_x, &change_in_y)
 
         elapsed_time = time.time() - init_time
+
+        compute_primal_value(pb, f, g, h, x, rf, rhx, rQ,
+                                         buff_x, buff_y, buff,
+                                         &primal_val, &infeas)
+        pb.p_objs.append(primal_val)
+
         if verbose > 0 or tolerance > 0:
             if ((verbose > 0 and elapsed_time > nb_prints * verbose)
                     or change_in_x + change_in_y < min_change_in_x
