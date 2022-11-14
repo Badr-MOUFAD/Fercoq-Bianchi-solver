@@ -81,7 +81,7 @@ class Problem:
             if blocks is None:
                   blocks = np.arange(N+1, dtype=np.uint32)
             self.blocks = np.array(blocks, dtype=np.uint32)
-            if blocks[-1] != N:
+            if blocks[len(blocks)-1] != N:
                   raise Warning("blocks[-1] should be equal to N")
             if x_init is None:
                   self.x_init = np.zeros(N)
@@ -111,7 +111,7 @@ class Problem:
                 cf = Af = bf = np.empty(0)
             if blocks_f is None:
                 blocks_f = np.arange(len(f)+1, dtype=np.uint32)
-            if len(blocks_f) != len(f) + 1 or blocks_f[-1] != Af.shape[0]:
+            if len(blocks_f) != len(f) + 1 or blocks_f[len(blocks_f)-1] != Af.shape[0]:
                   raise Warning("blocks_f seems to be ill defined.")
             
             if g is not None and len(g) > 0:
@@ -169,7 +169,7 @@ class Problem:
                 h_takes_infinite_values = False
             if blocks_h is None:
                 blocks_h = np.arange(len(h)+1, dtype=np.uint32)
-            if len(blocks_h) != len(h) + 1 or blocks_h[-1] != Ah.shape[0]:
+            if len(blocks_h) != len(h) + 1 or blocks_h[len(blocks_h)-1] != Ah.shape[0]:
                     raise Warning("blocks_h seems to be ill defined.")
             if Q is None:
                 self.Q_present = False
