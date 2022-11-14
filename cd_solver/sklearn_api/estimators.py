@@ -2,11 +2,21 @@ from cd_solver import Problem, coordinate_descent
 
 
 class Lasso:
-    """Solves un normalized Lasso problem using Fercoq & Bianchi algorithm.
+    """Scikit-learn like Lasso estimator.
+
+    Solve un normalized Lasso problem using Fercoq & Bianchi algorithm.
 
     Objective::
 
         min_w (1/2) * ||y - Xw||^2 + alpha * ||w||_1
+
+    Parameters
+    ----------
+        smooth_formulation : bool, default=True
+            If True, considers the datafit term a smooth
+            and uses its gradient to minimize objective.
+            If False, uses a saddle point formulation of objective
+            and uses prox of the conjugate of datafit to minimize objective.
     """
 
     def __init__(self, alpha, smooth_formulation=True,
@@ -20,6 +30,8 @@ class Lasso:
         alpha = self.alpha
         n_samples, n_features = X.shape
 
+        # cf. cd_solver.pyx
+        # Problem docstring for the choice of params
         if self.smooth_formulation:
             datafit_params = {
                 'f': ["square"], 'Af': X, 'bf': y,
